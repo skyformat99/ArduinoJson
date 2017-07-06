@@ -44,12 +44,15 @@ struct FloatTraits<T, 8 /*64bits*/> {
   }
 
   static T nan() {
-    uint64_t x = uint64_t(0x7ff8) << 48;
-    return *reinterpret_cast<T*>(&x);
+    return forge(0x7ff80000, 0x00000000);
   }
 
   static T inf() {
-    uint64_t x = uint64_t(0x7ff0) << 48;
+    return forge(0x7ff00000, 0x00000000);
+  }
+
+  static T forge(uint32_t msb, uint32_t lsb) {
+    uint64_t x = uint64_t(msb) << 32 | lsb;
     return *reinterpret_cast<T*>(&x);
   }
 };

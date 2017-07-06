@@ -40,7 +40,7 @@ endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	add_compile_options(
 		-Wstrict-null-sentinel
-		-fsingle-precision-constant
+		# -fsingle-precision-constant
 	)
 
 	if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.5)
