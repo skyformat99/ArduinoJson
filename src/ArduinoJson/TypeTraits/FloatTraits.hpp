@@ -80,13 +80,13 @@ struct FloatTraits<T, 4 /*32bits*/> {
   static T make_float(T m, TExponent e) {
     if (e > 0) {
       static T factors[] = {1e1f, 1e2f, 1e4f, 1e8f, 1e16f, 1e32f};
-      for (uint8_t index = 0; index < 6; e >>= 1, index++) {
+      for (uint8_t index = 0; e != 0; e >>= 1, index++) {
         if (e & 1) m *= factors[index];
       }
     } else {
       e = -e;
       static T factors[] = {1e-1f, 1e-2f, 1e-4f, 1e-8f, 1e-16f, 1e-32f};
-      for (uint8_t index = 0; index < 6; e >>= 1, index++) {
+      for (uint8_t index = 0; e != 0; e >>= 1, index++) {
         if (e & 1) m *= factors[index];
       }
     }
