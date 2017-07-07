@@ -4,6 +4,7 @@ ArduinoJson: change log
 HEAD
 ----
 
+* Removed dependency on `PGM_P` as Particle 0.6.2 doesn't define it (issue #546)
 * Fixed warning "dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]"
 
 v5.11.0
