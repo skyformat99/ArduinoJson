@@ -53,14 +53,10 @@ struct FloatTraits<T, 8 /*64bits*/> {
 
   static T forge(uint32_t msb, uint32_t lsb) {
     union {
-      struct {
-        uint32_t msb;
-        uint32_t lsb;
-      } integerBits;
+      uint64_t integerBits;
       T floatBits;
     };
-    integerBits.msb = msb;
-    integerBits.lsb = lsb;
+    integerBits = (uint64_t(msb) << 32) | lsb;
     return floatBits;
   }
 };
@@ -78,9 +74,15 @@ struct FloatTraits<T, 4 /*32bits*/> {
 
   template <typename TExponent>
   static T make_float(T m, TExponent e) {
-    if (e > 0)
-      return m * (e & 1 ? 1e1f : 1) * (e & 2 ? 1e2f : 1) * (e & 4 ? 1e4f : 1) *
-             (e & 8 ? 1e8f : 1) * (e & 16 ? 1e16f : 1) * (e & 32 ? 1e32f : 1);
+    if (e > 0) {
+      uint8_t index;
+      TExponent bit;
+      static T factors[] = {1e1f, 1e2f, 1e4f, 1e8f, 1e16f, 1e32f};
+      for (bit = 1, index = 0; bit & 63; bit <<= 1, index++) {
+        if (e & bit) m *= factors[index];
+      }
+      return m;
+    }
     e = -e;
     return m * (e & 1 ? 1e-1f : 1) * (e & 2 ? 1e-2f : 1) * (e & 4 ? 1e-4f : 1) *
            (e & 8 ? 1e-8f : 1) * (e & 16 ? 1e-16f : 1) * (e & 32 ? 1e-32f : 1);
