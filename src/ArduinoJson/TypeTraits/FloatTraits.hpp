@@ -52,8 +52,16 @@ struct FloatTraits<T, 8 /*64bits*/> {
   }
 
   static T forge(uint32_t msb, uint32_t lsb) {
-    uint64_t x = uint64_t(msb) << 32 | lsb;
-    return *reinterpret_cast<T*>(&x);
+    union {
+      struct {
+        uint32_t msb;
+        uint32_t lsb;
+      } integerBits;
+      T floatBits;
+    };
+    integerBits.msb = msb;
+    integerBits.lsb = lsb;
+    return floatBits;
   }
 };
 #endif
@@ -78,14 +86,21 @@ struct FloatTraits<T, 4 /*32bits*/> {
            (e & 8 ? 1e-8f : 1) * (e & 16 ? 1e-16f : 1) * (e & 32 ? 1e-32f : 1);
   }
 
+  static T forge(uint32_t bits) {
+    union {
+      uint32_t integerBits;
+      T floatBits;
+    };
+    integerBits = bits;
+    return floatBits;
+  }
+
   static T nan() {
-    uint32_t x = 0x7fc00000;
-    return *reinterpret_cast<T*>(&x);
+    return forge(0x7fc00000);
   }
 
   static T inf() {
-    uint32_t x = 0x7f800000;
-    return *reinterpret_cast<T*>(&x);
+    return forge(0x7f800000);
   }
 };
 }
