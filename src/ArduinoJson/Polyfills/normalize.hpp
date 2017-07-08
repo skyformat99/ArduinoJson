@@ -17,11 +17,11 @@ int16_t normalize(T& value) {
   using namespace TypeTraits;
   int16_t powersOf10 = 0;
 
-  // TODO: remove hardcoded 8
+  int8_t index = sizeof(T) == 8 ? 8 : 5;
+  int bit = 1 << index;
 
   if (value >= ARDUINOJSON_POSITIVE_EXPONENTIATION_THRESHOLD) {
-    int bit = 256;
-    for (int8_t index = 8; index >= 0; index--) {
+    for (; index >= 0; index--) {
       if (value >= FloatTraits<T>::positiveBinaryPowerOfTen(index)) {
         value /= FloatTraits<T>::positiveBinaryPowerOfTen(index);
         powersOf10 = int16_t(powersOf10 + bit);
@@ -31,8 +31,7 @@ int16_t normalize(T& value) {
   }
 
   if (value > 0 && value <= ARDUINOJSON_NEGATIVE_EXPONENTIATION_THRESHOLD) {
-    int bit = 256;
-    for (int8_t index = 8; index >= 0; index--) {
+    for (; index >= 0; index--) {
       if (value / 10 < FloatTraits<T>::negativeBinaryPowerOfTen(index)) {
         value *= FloatTraits<T>::positiveBinaryPowerOfTen(index);
         powersOf10 = int16_t(powersOf10 - bit);
