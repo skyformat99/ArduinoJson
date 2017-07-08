@@ -23,7 +23,7 @@ int16_t normalize(T& value) {
   if (value >= ARDUINOJSON_POSITIVE_EXPONENTIATION_THRESHOLD) {
     for (; index >= 0; index--) {
       if (value >= FloatTraits<T>::positiveBinaryPowerOfTen(index)) {
-        value /= FloatTraits<T>::positiveBinaryPowerOfTen(index);
+        value *= FloatTraits<T>::negativeBinaryPowerOfTen(index);
         powersOf10 = int16_t(powersOf10 + bit);
       }
       bit >>= 1;
